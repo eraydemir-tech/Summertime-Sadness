@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tatil 2026 — Eray</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+  --ink: #1A1A1B;
+  --paper: #FBFBFA;
+  --orange: #E05C1A;
+  --orange-soft: #F4A261;
+  --sage: #3B6B5A;
+  --sky: #4A90B8;
+  --stone: #8C8882;
+  --rule: #E5E4DF;
+  --surface: #FFFFFF;
+  --green: #2D7A4F;
+  --red: #C0392B;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); overflow-x: hidden; }
+
+/* ─── ENTRANCE ANIMATIONS ─── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes toastIn {
+  from { transform: translateY(10px) scale(0.9); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ─── DESTINATION STRIP ─── */
+.dest-strip {
+  background: var(--ink);
+  overflow: hidden;
+  position: relative;
+  height: 260px;
+  animation: scaleIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.dest-scroll {
+  display: flex;
+  height: 100%;
+  gap: 0;
+  transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+}
+.dest-card {
+  flex: 0 0 20%;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: flex 0.6s cubic-bezier(.4,0,.2,1);
+}
+.dest-card:hover { flex: 0 0 28%; }
+.dest-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.65);
+  transition: filter 0.4s, transform 0.5s;
+}
+.dest-card:hover img { filter: brightness(.82); transform: scale(1.05); }
+.dest-card .dinfo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 18px 14px;
+  background: linear-gradient(transparent, rgba(0,0,0,.75));
+  color: #fff;
+  transition: transform 0.3s;
+}
+.dest-card .ddate {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.65);
+  margin-bottom: 3px;
+}
+.dest-card .dcity {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  line-height: 1.1;
+}
+.dest-card .dtag {
+  font-size: 10px;
+  color: rgba(255,255,255,.55);
+  margin-top: 3px;
+}
+/* popup trigger dot */
+.dest-card .popup-hint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px; height: 24px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #fff;
+  transition: all .25s ease;
+}
+.dest-card:hover .popup-hint { background: var(--orange); border-color: var(--orange); transform: scale(1.1); }
+
+/* ─── POPUP ─── */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+.popup-overlay.open { display: flex; }
+.popup-box {
+  background: var(--surface);
+  border-radius: 20px;
+  overflow: hidden;
+  width: min(600px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.15);
+  animation: scaleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.popup-img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+.popup-body { padding: 24px 28px 32px; }
+.popup-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+.popup-title { font-family: 'Playfair Display', serif; font-size: 28px; line-height: 1.1; margin-bottom: 12px; }
+.popup-desc { font-size: 13.5px; color: #444; line-height: 1.65; margin-bottom: 16px; }
+.popup-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.popup-fact { background: var(--paper); border-radius: 10px; padding: 12px; border: 1px solid var(--rule); }
+.popup-fact-l { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; color: var(--stone); margin-bottom: 4px; }
+.popup-fact-v { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.popup-tips { border-top: 1px solid var(--rule); padding-top: 16px; }
+.popup-tips-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--stone); margin-bottom: 10px; }
+.popup-tip { display: flex; gap: 8px; margin-bottom: 8px; font-size: 13px; color: #444; align-items: flex-start; }
+.popup-tip::before { content: '→'; color: var(--orange); flex-shrink: 0; font-weight: 600; margin-top: 1px; }
+.popup-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  background: rgba(0,0,0,.45); border: none; border-radius: 50%;
+  color: #fff; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+.popup-close:hover { background: var(--orange); transform: rotate(90deg); }
+
+/* ─── HEADER BAR ─── */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 12px;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.topbar-left h1 { font-size: 15px; font-weight: 600; letter-spacing: -.2px; }
+.topbar-left p { font-size: 10.5px; color: var(--stone); margin-top: 1px; }
+.topbar-stats { display: flex; gap: 16px; align-items: center; }
+.ts { text-align: center; }
+.ts-v { font-size: 16px; font-weight: 700; line-height: 1; transition: color 0.3s; }
+.ts-v.o { color: var(--orange); }
+.ts-v.g { color: var(--green); }
+.ts-v.r { color: var(--red); }
+.ts-l { font-size: 9px; text-transform: uppercase; letter-spacing: .8px; color: var(--stone); margin-top: 2px; }
+.topbar-div { width: 1px; height: 30px; background: var(--rule); }
+.save-btn {
+  background: var(--ink); color: #fff;
+  border: none; border-radius: 6px;
+  padding: 8px 18px; font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .2s;
+}
+.save-btn:hover { background: var(--orange); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(224, 92, 26, 0.2); }
+
+/* ─── BUDGET STRIP ─── */
+.budget-strip {
+  background: var(--ink);
+  color: #fff;
+  padding: 14px 28px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+.bs { }
+.bs-l { font-size: 9.5px; text-transform: uppercase; letter-spacing: .9px; color: rgba(255,255,255,.45); margin-bottom: 2px; }
+.bs-v { font-size: 20px; font-weight: 700; }
+.bs-v.est { color: #8ABFDB; }
+.bs-v.paid { color: #6ECC94; }
+.bs-v.due { color: var(--orange-soft); }
+.bs-v.save { color: #A8D8A8; }
+.budget-bar { flex: 1; min-width: 180px; }
+.bbar-track { background: rgba(255,255,255,.12); border-radius: 99px; height: 5px; overflow: hidden; margin-top: 8px; }
+.bbar-fill { background: linear-gradient(90deg, var(--orange), var(--orange-soft)); height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(0.16, 1, 0.3, 1); }
+.bbar-label { font-size: 9.5px; color: rgba(255,255,255,.4); display: flex; justify-content: space-between; }
+
+/* ─── ACIL ─── */
+.acil-bar {
+  background: #FDF0EE;
+  border-bottom: 2px solid var(--red);
+  padding: 10px 28px;
+  font-size: 12px;
+  color: #5C1A14;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: scaleIn 0.4s ease;
+}
+.acil-bar strong { color: var(--red); }
+
+/* ─── MAIN CONTENT ─── */
+.main { max-width: 1160px; margin: 0 auto; padding: 28px 20px 60px; }
+
+/* ─── SECTION HEADER ─── */
+.sec-hdr { display: flex; align-items: baseline; gap: 10px; margin: 32px 0 14px; padding-bottom: 8px; border-bottom: 1.5px solid var(--rule); }
+.sec-hdr h2 { font-family: 'Playfair Display', serif; font-size: 19px; }
+.sec-hdr p { font-size: 11px; color: var(--stone); }
+
+/* ─── TABLE ─── */
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.01); margin-bottom: 24px; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+.tbl thead th {
+  background: var(--ink); color: rgba(255,255,255,.7);
+  font-size: 9.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .8px;
+  padding: 12px 14px; text-align: left;
+  white-space: nowrap;
+}
+.tbl thead th:first-child { color: #fff; }
+.tbl tbody tr { border-bottom: 1px solid #F3F3F0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.tbl tbody tr:last-child { border-bottom: none; }
+.tbl tbody tr:hover { background: #FAFAF8; }
+.tbl tbody tr.urgent { border-left: 3.5px solid var(--red); }
+.tbl tbody tr.optional { background: #F8F9FD; }
+.tbl tbody tr.festival { background: #FAF7FD; }
+
+/* Active Done Table Transitions */
+.tbl tbody tr.done td { opacity: .42; transition: opacity 0.3s; }
+.tbl tbody tr.done { background: #FAFAF8 !important; }
+.tbl tbody tr.done .km { text-decoration: line-through; color: var(--stone); }
+td { padding: 12px 14px; vertical-align: top; font-size: 12px; }
+
+.km { font-weight: 600; font-size: 12.5px; line-height: 1.2; transition: color 0.3s; }
+.tp { font-size: 10px; color: var(--stone); margin-top: 2px; }
+.desc { font-size: 11px; color: #555; line-height: 1.5; margin-top: 4px; }
+.ins { font-size: 10.5px; color: var(--orange); margin-top: 3px; font-style: italic; }
+
+/* BADGE */
+.badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.ba { background: #FDECEA; color: #C0392B; }
+.bm { background: #FEF3E2; color: #BF5700; }
+.bn { background: #EAF5EE; color: #2D7A4F; }
+.bf { background: #EAF2FA; color: #1A6EA8; }
+.bv { background: #F4EFF9; color: #6C3A9A; }
+.bk { background: #F0F0ED; color: #666; }
+
+/* PRICE COLS */
+.price-group { display: flex; flex-direction: column; gap: 4px; min-width: 128px; }
+.price-row { display: flex; align-items: center; gap: 5px; }
+.plbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; width: 44px; flex-shrink: 0; }
+.plbl.e { color: #4A90B8; }
+.plbl.p { color: var(--green); }
+.finp { display: flex; align-items: center; gap: 3px; border-radius: 5px; padding: 3px 8px; flex: 1; border: 1px solid transparent; transition: all 0.25s; }
+.finp.ei { background: #EFF7FC; border-color: #C2DDF0; }
+.finp.pi { background: #EFF8F3; border-color: #A8D8B8; }
+.finp span { font-size: 10px; color: #aaa; }
+.finp input { border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 600; color: var(--ink); width: 100%; outline: none; }
+.finp input::placeholder { color: #CCC; font-weight: 400; }
+.finp:focus-within { transform: scale(1.02); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+
+/* CHECK */
+.chkcell { text-align: center; min-width: 52px; }
+.chkw { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+.chkw input { width: 17px; height: 17px; accent-color: var(--orange); cursor: pointer; transition: transform 0.2s; }
+.chkw input:active { transform: scale(0.85); }
+.chkl { font-size: 8.5px; color: #bbb; text-align: center; line-height: 1.3; }
+
+/* LINKS */
+.lnks { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.lbtn { display: inline-flex; align-items: center; gap: 3px; font-size: 9.5px; font-weight: 600; padding: 3px 8px; border-radius: 4px; text-decoration: none; white-space: nowrap; transition: all .2s; border: 1px solid; }
+.lb1 { color: #1060A0; background: #EEF5FF; border-color: #B8D4F0; } .lb1:hover { background: #1060A0; color: #fff; transform: translateY(-1px); }
+.lb2 { color: #A84800; background: #FFF2E8; border-color: #F0C898; } .lb2:hover { background: #A84800; color: #fff; transform: translateY(-1px); }
+.lb3 { color: #2D7A4F; background: #EFF8F2; border-color: #A8D8B8; } .lb3:hover { background: #2D7A4F; color: #fff; transform: translateY(-1px); }
+.lb4 { color: #6C3A9A; background: #F4EFF9; border-color: #CCAAE8; } .lb4:hover { background: #6C3A9A; color: #fff; transform: translateY(-1px); }
+.lb5 { color: #006064; background: #E0F7FA; border-color: #80DEEA; } .lb5:hover { background: #006064; color: #fff; transform: translateY(-1px); }
+
+/* PRICE COMPARE mini */
+.cmp { background: #F7F7F5; border-radius: 6px; padding: 6px 8px; margin: 5px 0; font-size: 10.5px; display: flex; flex-direction: column; gap: 2px; }
+.cmp-row { display: flex; gap: 6px; align-items: center; }
+.cmp-row .cl { width: 90px; flex-shrink: 0; font-weight: 600; color: #666; }
+.cmp-row .cv { flex: 1; color: #333; }
+.cmp-row .cpr { font-weight: 700; white-space: nowrap; color: var(--stone); }
+.cmp-row.best .cl { color: var(--green); }
+.cmp-row.best .cpr { color: var(--green); }
+
+/* CROW */
+.crow { background: #F4F4F1 !important; }
+.crow td { padding: 6px 14px; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--stone); border-bottom: 1px solid var(--rule) !important; }
+
+/* ECO GRID */
+.eco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 8px; }
+.eco-card { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--green); border-radius: 8px; padding: 14px 16px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.eco-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.04); }
+.eco-t { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.eco-d { font-size: 11px; color: #555; line-height: 1.55; }
+.eco-s { font-size: 10.5px; color: var(--green); font-weight: 600; margin-top: 6px; }
+
+/* ─── TAKVİM EK STİLLERİ (GOOGLE CALENDAR STİLİ) ─── */
+.cal-week-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 18px 0 8px;
+  border-left: 3px solid var(--orange);
+  padding-left: 8px;
+}
+.cal-grid-wrapper {
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  -webkit-overflow-scrolling: touch;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(145px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+}
+.cal-day-card {
+  background: var(--surface);
+  padding: 12px 10px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+.cal-day-card:hover { background-color: #FAFBFB; }
+.cal-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #F3F3F0;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+.cal-day-lbl { font-size: 11.5px; font-weight: 700; color: var(--ink); }
+.cal-day-name { font-size: 8.5px; color: var(--stone); text-transform: uppercase; font-weight: 700; }
+
+.cal-event-pill {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 4px 6px;
+  border-radius: 4px;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cal-event-pill.completed {
+  opacity: 0.45;
+  text-decoration: line-through;
+  filter: grayscale(40%);
+}
+
+/* Event Kategori Renkleri */
+.ep-transport { background: #EEF5FF; color: #1060A0; border-left: 2.5px solid #1060A0; }
+.ep-hotel { background: #EFF8F2; color: #2D7A4F; border-left: 2.5px solid #2D7A4F; }
+.ep-activity { background: #FFF2E8; color: #A84800; border-left: 2.5px solid #A84800; }
+.ep-optional { background: #F4EFF9; color: #6C3A9A; border-left: 2.5px solid #6C3A9A; }
+.ep-festival { background: #F0F0ED; color: #666; border-left: 2.5px solid #666; }
+
+.cal-extra-box {
+  background: #F4F4F1;
+  border: 1px dashed var(--stone);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 24px;
+  animation: scaleIn 0.4s ease;
+}
+.cal-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.cal-extra-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cal-extra-date { font-size: 9px; font-weight: 700; color: var(--orange); text-transform: uppercase; }
+.cal-extra-title { font-size: 11px; font-weight: 600; color: var(--ink); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  animation: toastIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  .dest-card { flex: 0 0 40% !important; }
+  .topbar { padding: 12px 16px; }
+  .main { padding: 18px 12px 40px; }
+  td { padding: 8px 10px; }
+  .price-group { min-width: 110px; }
+  .budget-strip { padding: 12px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ DESTINATION PHOTO STRIP ══════ -->
+<div class="dest-strip" id="dest-strip">
+  <div class="dest-scroll" id="dest-scroll">
+
+    <div class="dest-card" onclick="openPopup('ankara')">
+      <img src="https://images.unsplash.com/photo-1607554972535-df452da6952a?auto=format&fit=crop&w=600&q=80" alt="Ankara" onerror="this.src='https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=600&q=80'">
+      <div class="popup-hint">↗</div>
+      <div class="dinfo">
+        <div class="ddate">3–5 Tem</div>
+        <div class="dcity">Ankara</div>
+        <div class="dtag">Gece hayatı & arkadaşlar</div>
+      </div>
+    </div>
+
+    <div class="dest-card" onclick="openPopup('kabak')">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80" alt="Kabak Koyu" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80'">
+      <div class="popup-hint">↗</div>
+      <div class="dinfo">
+        <div class="ddate">6–8 Tem</div>
+        <div class="dcity">Kabak Koyu</div>
+        <div class="dtag">Kamp · Doğa · Deniz</div>
+      </div>
+    </div>
+
+    <div class="dest-card" onclick="openPopup('oludeniz')">
+      <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80" alt="Ölüdeniz" onerror="this.src='https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80'">
+      <div class="popup-hint">↗</div>
+      <div class="dinfo">
+        <div class="ddate">6–8 Tem</div>
+        <div class="dcity">Ölüdeniz</div>
+        <div class="dtag">Babadağ tandem paraşüt</div>
+      </div>
+    </div>
+
+    <div class="dest-card" onclick="openPopup('kas')">
+      <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80" alt="Kaş" onerror="this.src='https://images.unsplash.com/photo-1520105548440-63b15c2d3d74?w=600&q=80'">
+      <div class="popup-hint">↗</div>
+      <div class="dinfo">
+        <div class="ddate">9–11 Tem</div>
+        <div class="dcity">Kaş</div>
+        <div class="dtag">Tekne · Kekova · Kamp</div>
+      </div>
+    </div>
+
+    <div class="dest-card" onclick="openPopup('izmir')">
+      <img src="https://images.unsplash.com/photo-1562602833-0f4ab2fc46e3?auto=format&fit=crop&w=600&q=80" alt="İzmir" onerror="this.src='https://images.unsplash.com/photo-1562602833-0f4ab2fc46e3?w=600&q=80'">
+      <div class="popup-hint">↗</div>
+      <div class="dinfo">
+        <div class="ddate">12–15 Tem</div>
+        <div class="dcity">İzmir</div>
+        <div class="dtag">Baz kamp · Gece · Günübirlik</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ POPUP ══════ -->
+<div class="popup-overlay" id="popup-overlay" onclick="closePopup(event)">
+  <div class="popup-box" id="popup-box">
+    <button class="popup-close" onclick="closePopupBtn()">✕</button>
+    <img class="popup-img" id="popup-img" src="" alt="">
+    <div class="popup-body">
+      <div class="popup-eyebrow" id="popup-eyebrow"></div>
+      <div class="popup-title" id="popup-title"></div>
+      <div class="popup-desc" id="popup-desc"></div>
+      <div class="popup-facts" id="popup-facts"></div>
+      <div class="popup-tips">
+        <div class="popup-tips-title">Insider Notlar</div>
+        <div id="popup-tips-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TOP BAR ══════ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <h1>Tatil Planı — Temmuz 2026</h1>
+    <p>3–16 Temmuz · 2 Kişi · Ankara → Fethiye/Kabak → Kaş → İzmir → İstanbul</p>
+  </div>
+  <div class="topbar-stats">
+    <div class="ts"><div class="ts-v" id="ts-prog">0%</div><div class="ts-l">Tamamlandı</div></div>
+    <div class="topbar-div"></div>
+    <div class="ts"><div class="ts-v r" id="ts-acil">2</div><div class="ts-l">Acil</div></div>
+    <div class="topbar-div"></div>
+    <div class="ts"><div class="ts-v o" id="ts-est">—</div><div class="ts-l">Tahmini</div></div>
+    <div class="topbar-div"></div>
+    <div class="ts"><div class="ts-v g" id="ts-paid">0 ₺</div><div class="ts-l">Ödendi</div></div>
+    <div class="topbar-div"></div>
+    <div class="ts"><div class="ts-v o" id="ts-due">—</div><div class="ts-l">Kalan</div></div>
+    <button class="save-btn" onclick="saveData()">Kaydet</button>
+  </div>
+</div>
+
+<!-- ══════ ACIL BAR ══════ -->
+<div class="acil-bar" id="acil-bar">
+  <span>⚠</span>
+  <span><strong>Bu hafta:</strong> (1) Ölüdeniz Paraşüt rezervasyonu — slot'lar doluyor &nbsp;·&nbsp; (2) Kabak Koyu Kamp alanı — Sultan Camp / Atlas / Aşiyan</span>
+</div>
+
+<!-- ══════ BUDGET STRIP ══════ -->
+<div class="budget-strip">
+  <div class="bs"><div class="bs-l">Tahmini Toplam</div><div class="bs-v est" id="bs-est">— ₺</div></div>
+  <div class="bs"><div class="bs-l">Ödendi ✓</div><div class="bs-v paid" id="bs-paid">0 ₺</div></div>
+  <div class="bs"><div class="bs-l">Ödenecek</div><div class="bs-v due" id="bs-due">— ₺</div></div>
+  <div class="bs"><div class="bs-l">Potansiyel Tasarruf</div><div class="bs-v save">~3.500–5.000 ₺</div></div>
+  <div class="budget-bar">
+    <div class="bbar-label"><span>İlerleme</span><span id="bb-pct">0%</span></div>
+    <div class="bbar-track"><div class="bbar-fill" id="bb-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ══════ MAIN ══════ -->
+<div class="main">
+
+  <!-- ULAŞIM -->
+  <div class="sec-hdr"><h2>Ulaşım</h2><p>BlaBlaCar · Otobüs · Uçak karşılaştırması — her güzergah için en ucuz seçenek işaretli</p></div>
+  <table class="tbl">
+    <thead><tr>
+      <th style="width:160px">Güzergah</th>
+      <th>Seçenekler & Linkler</th>
+      <th style="width:78px">Tarih</th>
+      <th style="width:78px">Öncelik</th>
+      <th style="width:148px">Tahmini / Ödendi</th>
+      <th style="width:54px">✓</th>
+    </tr></thead>
+    <tbody>
+
+      <tr>
+        <td><div class="km">İstanbul → Ankara</div><div class="tp">484 km · ~5–6 saat</div></td>
+        <td>
+          <div class="cmp">
+            <div class="cmp-row best"><span class="cl">🚗 BlaBlaCar</span><span class="cv">~500₺/kişi</span><span class="cpr">~1.000₺ ✓</span></div>
+            <div class="cmp-row"><span class="cl">🚌 Otobüs</span><span class="cv">598₺/kişi · Kamil Koç</span><span class="cpr">~1.200₺</span></div>
+            <div class="cmp-row"><span class="cl">✈️ Uçak</span><span class="cv">Pegasus ~1.333₺/kişi</span><span class="cpr">~2.700₺</span></div>
+          </div>
+          <div class="lnks">
+            <a class="lbtn lb1" href="https://www.blablacar.com.tr/ride-sharing/istanbul/ankara" target="_blank">🚗 BlaBlaCar</a>
+            <a class="lbtn lb2" href="https://www.obilet.com/otobus-bileti/istanbul-ankara" target="_blank">🚌 Obilet</a>
+            <a class="lbtn lb3" href="https://www.enuygun.com/ucak-bileti/istanbul-ankara-ista-anka/" target="_blank">✈️ Enuygun</a>
+          </div>
+          <div class="ins">Gece seferi tercih et — sabah Ankara'dasın, gün kaybı yok.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">3 Tem</span><br><span style="font-size:10px;color:#aaa">Cuma</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="900" id="e_u1" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_u1" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_u1" onchange="sync()"><label class="chkl" for="c_u1">Alındı</label></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="km">Ankara → Fethiye</div><div class="tp">~700 km · ~8–9 saat</div></td>
+        <td>
+          <div class="cmp">
+            <div class="cmp-row best"><span class="cl">🚗 BlaBlaCar</span><span class="cv">~775₺/kişi</span><span class="cpr">~1.550₺ ✓</span></div>
+            <div class="cmp-row"><span class="cl">🚌 Otobüs</span><span class="cv">1.050–1.200₺/kişi · Pamukkale</span><span class="cpr">~2.200₺</span></div>
+          </div>
+          <div class="lnks">
+            <a class="lbtn lb1" href="https://www.blablacar.com.tr/ride-sharing/ankara/fethiye" target="_blank">🚗 BlaBlaCar</a>
+            <a class="lbtn lb2" href="https://www.obilet.com/otobus-bileti/ankara-fethiye" target="_blank">🚌 Obilet</a>
+            <a class="lbtn lb2" href="https://www.pamukkale.com.tr/otobus-bileti/ankara-fethiye/" target="_blank">🚌 Pamukkale</a>
+          </div>
+          <div class="ins">Gece 23:00 çıkış = sabah 07:00 Fethiye. En mantıklı seçenek.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">6 Tem</span><br><span style="font-size:10px;color:#aaa">Pzts</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="1550" id="e_u2" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_u2" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_u2" onchange="sync()"><label class="chkl" for="c_u2">Alındı</label></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="km">Fethiye → Kaş</div><div class="tp">~100 km · ~2 saat</div></td>
+        <td>
+          <div class="cmp">
+            <div class="cmp-row best"><span class="cl">🚌 Otobüs</span><span class="cv">~260₺/kişi · Fethiye Seyahat</span><span class="cpr">~520₺ ✓</span></div>
+            <div class="cmp-row"><span class="cl">🚗 BlaBlaCar</span><span class="cv">İlan az — risk var</span><span class="cpr">~400₺</span></div>
+          </div>
+          <div class="lnks">
+            <a class="lbtn lb1" href="https://www.blablacar.com.tr/ride-sharing/fethiye/kas" target="_blank">🚗 BlaBlaCar</a>
+            <a class="lbtn lb2" href="https://www.obilet.com/otobus-bileti/fethiye-kas" target="_blank">🚌 Obilet</a>
+            <a class="lbtn lb2" href="https://www.flixbus.com/bus-routes/bus-fethiye-kas" target="_blank">🚌 FlixBus</a>
+          </div>
+          <div class="ins">Kaputaş Plajı yol üzeri — driver'dan durdurmasını iste.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">9 Tem</span><br><span style="font-size:10px;color:#aaa">Prş</span></td>
+        <td><span class="badge bn">Normal</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="520" id="e_u3" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_u3" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_u3" onchange="sync()"><label class="chkl" for="c_u3">Alındı</label></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="km">Kaş → İzmir</div><div class="tp">~400 km · ~5–6 saat</div></td>
+        <td>
+          <div class="cmp">
+            <div class="cmp-row best"><span class="cl">🚗 BlaBlaCar</span><span class="cv">~500₺/kişi</span><span class="cpr">~1.000₺ ✓</span></div>
+            <div class="cmp-row"><span class="cl">🚌 Otobüs</span><span class="cv">1.350–1.550₺/kişi</span><span class="cpr">~2.900₺</span></div>
+          </div>
+          <div class="lnks">
+            <a class="lbtn lb1" href="https://www.blablacar.com.tr/ride-sharing/kas/izmir" target="_blank">🚗 BlaBlaCar</a>
+            <a class="lbtn lb2" href="https://www.obilet.com/otobus-bileti/kas-izmir" target="_blank">🚌 Obilet</a>
+          </div>
+          <div class="ins">Haziran sonu BlaBlaCar takibe al — ilanlar 2–3 hafta önceden çıkar.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">12 Tem</span><br><span style="font-size:10px;color:#aaa">Pazar</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="1000" id="e_u4" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_u4" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_u4" onchange="sync()"><label class="chkl" for="c_u4">Alındı</label></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="km">İzmir → İstanbul</div><div class="tp">~600 km veya 70 dk uçak</div></td>
+        <td>
+          <div class="cmp">
+            <div class="cmp-row best"><span class="cl">🚗 BlaBlaCar</span><span class="cv">~400₺/kişi</span><span class="cpr">~800₺ ✓</span></div>
+            <div class="cmp-row"><span class="cl">🚌 Otobüs</span><span class="cv">750₺/kişi başlangıç</span><span class="cpr">~1.500₺</span></div>
+            <div class="cmp-row"><span class="cl">✈️ Uçak</span><span class="cv">Pegasus ~1.333₺/kişi · 70 dk</span><span class="cpr">~2.700₺</span></div>
+          </div>
+          <div class="lnks">
+            <a class="lbtn lb1" href="https://www.blablacar.com.tr/ride-sharing/izmir/istanbul" target="_blank">🚗 BlaBlaCar</a>
+            <a class="lbtn lb2" href="https://www.obilet.com/otobus-bileti/izmir-istanbul" target="_blank">🚌 Obilet</a>
+            <a class="lbtn lb3" href="https://www.enuygun.com/ucak-bileti/izmir-istanbul-izma-ista/" target="_blank">✈️ Enuygun</a>
+            <a class="lbtn lb3" href="https://www.flypgs.com/" target="_blank">✈️ Pegasus</a>
+          </div>
+          <div class="ins">Uçak alacaksan şimdi al — 16 Tem Temmuz zirvesi fiyatları.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">16 Tem</span><br><span style="font-size:10px;color:#aaa">Prş</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="800" id="e_u5" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_u5" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_u5" onchange="sync()"><label class="chkl" for="c_u5">Alındı</label></div></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- KONAKLAMA -->
+  <div class="sec-hdr" style="margin-top:32px"><h2>Konaklama</h2><p>Arkadaşlarda ücretsiz + kamp alanları</p></div>
+  <table class="tbl">
+    <thead><tr>
+      <th style="width:160px">Yer</th>
+      <th>Detay & Rezervasyon</th>
+      <th style="width:78px">Tarih</th>
+      <th style="width:78px">Öncelik</th>
+      <th style="width:148px">Tahmini / Ödendi</th>
+      <th style="width:54px">✓</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><div class="km">Ankara</div><div class="tp">Arkadaşta · 3 gece</div></td>
+        <td><div class="desc">Tarih konfirmasyonu al.</div><div class="ins">Haber ver şimdiden.</div></td>
+        <td><span style="font-size:11px;font-weight:600">3–5 Tem</span></td>
+        <td><span class="badge bf">Ücretsiz</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="0" id="e_k1" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_k1" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_k1" onchange="sync()"><label class="chkl" for="c_k1">Onay</label></div></td>
+      </tr>
+      <tr class="urgent">
+        <td><div class="km">Kabak Koyu Kamp</div><div class="tp">3 gece · ~1.800₺/gece ort.</div></td>
+        <td>
+          <div class="desc">Sultan Camp, Atlas Camping veya Aşiyan. Faralya'dan 30 dk yürüyüş ile koy.</div>
+          <div class="lnks">
+            <a class="lbtn lb5" href="https://www.sultancamp.com" target="_blank">⛺ Sultan Camp</a>
+            <a class="lbtn lb5" href="https://www.neredekal.com/kabak-koyu-camp-alanlari-camping/" target="_blank">⛺ Tüm Alanlar</a>
+          </div>
+          <div class="ins">Bu hafta rezervasyon zorunlu — Temmuz doluyor!</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge ba">⚠ Acil</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="5400" id="e_k2" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_k2" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_k2" onchange="sync()"><label class="chkl" for="c_k2">Rezerve</label></div></td>
+      </tr>
+      <tr>
+        <td><div class="km">Kaş Kamp</div><div class="tp">3 gece · ~2.000₺/gece</div></td>
+        <td>
+          <div class="desc">Kaş Kamping — merkeze 500m, Antik Tiyatro önü, denize sıfır 500m sahil.</div>
+          <div class="lnks"><a class="lbtn lb5" href="https://www.kaskamping.com/" target="_blank">⛺ Kaş Kamping</a></div>
+          <div class="ins">Haziran sonu ayırt.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">9–11 Tem</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="6000" id="e_k3" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_k3" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_k3" onchange="sync()"><label class="chkl" for="c_k3">Rezerve</label></div></td>
+      </tr>
+      <tr>
+        <td><div class="km">İzmir</div><div class="tp">Arkadaşta · 4 gece</div></td>
+        <td><div class="desc">Konfirmasyon al. Alsancak/Kordon çevresinde olması ideal.</div></td>
+        <td><span style="font-size:11px;font-weight:600">12–15 Tem</span></td>
+        <td><span class="badge bf">Ücretsiz</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="0" id="e_k4" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_k4" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_k4" onchange="sync()"><label class="chkl" for="c_k4">Onay</label></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- AKTİVİTELER -->
+  <div class="sec-hdr" style="margin-top:32px"><h2>Aktiviteler</h2><p>Temel plan — Acil olanlar kırmızı kenarlıklı</p></div>
+  <table class="tbl">
+    <thead><tr>
+      <th style="width:160px">Aktivite</th>
+      <th>Detay & Rezervasyon</th>
+      <th style="width:78px">Tarih</th>
+      <th style="width:78px">Öncelik</th>
+      <th style="width:148px">Tahmini / Ödendi</th>
+      <th style="width:54px">✓</th>
+    </tr></thead>
+    <tbody>
+      <tr><td colspan="6" class="crow">🏙️ Ankara · 3–5 Temmuz</td></tr>
+      <tr>
+        <td><div class="km">Gece Hayatı</div><div class="tp">Kızılay / Tunalı Hilmi</div></td>
+        <td>
+          <div class="desc">Jolly Joker (konser), 6:45 Kulüp, Klarnet Meyhane (fasıl), IF Performance Hall (rock).</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://www.jollyjoker.net/sube/ankara/" target="_blank">🎵 Jolly Joker</a>
+            <a class="lbtn lb4" href="https://www.biletix.com/etkinlikler/ankara" target="_blank">🎫 Biletix</a>
+          </div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">3–5 Tem</span></td>
+        <td><span class="badge bn">Normal</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="1500" id="e_a1" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a1" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a1" onchange="sync()"><label class="chkl" for="c_a1">Tamam</label></div></td>
+      </tr>
+
+      <tr><td colspan="6" class="crow">🌊 Fethiye / Kabak · 6–8 Temmuz</td></tr>
+      <tr class="urgent">
+        <td><div class="km">Ölüdeniz Paraşüt</div><div class="tp">Babadağ tandem · 2 kişi</div></td>
+        <td>
+          <div class="desc">1.969 mt tandem. 25–30 dk uçuş. Transfer + sigorta dahil. Fotoğraf ekstra ~500₺.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://yinyang.com.tr/babadag-yamac-parasutu/" target="_blank">🪂 Yin Yang</a>
+            <a class="lbtn lb4" href="https://fethiyeyamacparasutu.com/" target="_blank">🪂 Fethiye Paraşüt</a>
+            <a class="lbtn lb4" href="https://graviontourism.com/fethiye-yamac-parasutu/" target="_blank">🪂 Gravion</a>
+          </div>
+          <div class="ins">Bu hafta rezervasyon zorunlu!</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge ba">⚠ Acil</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="11000" id="e_a2" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a2" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a2" onchange="sync()"><label class="chkl" for="c_a2">Rezerve</label></div></td>
+      </tr>
+      <tr>
+        <td><div class="km">Fethiye Tekne Turu</div><div class="tp">12 Adalar · 2 kişi</div></td>
+        <td>
+          <div class="desc">10:30–18:00, öğle yemeği dahil. 5 koy. ~1.200₺/kişi.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://tatildeturla.com/turkiye/fethiye/fethiye-tekne-turu/" target="_blank">⛵ Tatilde Turla</a>
+            <a class="lbtn lb4" href="https://turhipo.com/tour/fethiye-tekne-turu/" target="_blank">⛵ Turhipo</a>
+          </div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="2400" id="e_a3" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a3" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a3" onchange="sync()"><label class="chkl" for="c_a3">Rezerve</label></div></td>
+      </tr>
+      <tr>
+        <td><div class="km">Likya Yolu + Snorkel</div><div class="tp">Kabak koyunda</div></td>
+        <td><div class="desc">Faralya–Kabak patika ~4 saat. Snorkel ekipman ~200₺/gün kira. Mavi Mağara ve Aladere Şelalesi yürüyüş mesafesinde.</div><div class="ins">Sabah 06:30 çık — öğlen 40°C.</div></td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge bn">Normal</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="400" id="e_a4" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a4" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a4" onchange="sync()"><label class="chkl" for="c_a4">Tamam</label></div></td>
+      </tr>
+
+      <tr><td colspan="6" class="crow">⛵ Kaş · 9–11 Temmuz</td></tr>
+      <tr>
+        <td><div class="km">Kekova Tekne Turu</div><div class="tp">Batık Şehir + Simena</div></td>
+        <td>
+          <div class="desc">Üçağız'a servis (35 dk), tekne. Batık Şehir, Simena Kalesi, snorkel. ~1.500–2.500₺/kişi.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://www.kasturlari.com/" target="_blank">⛵ Kaş Turları</a>
+            <a class="lbtn lb4" href="https://vigotours.com/tr/kas/" target="_blank">⛵ Vigo Tours</a>
+          </div>
+          <div class="ins">Öğleden sonra tur al — Simena'da gün batımı.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">9–11 Tem</span></td>
+        <td><span class="badge bm">Bu Ay</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="5000" id="e_a5" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a5" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a5" onchange="sync()"><label class="chkl" for="c_a5">Rezerve</label></div></td>
+      </tr>
+      <tr>
+        <td><div class="km">Kaputaş + Kafe Turu</div><div class="tp">Kaş merkez · liman</div></td>
+        <td><div class="desc">Kaputaş minibüs ~50₺/kişi. Liman kenarı sunset — en iyi ücretsiz aktivite.</div><div class="ins">Sabah 08:00'de git — 11:00'de doluyor.</div></td>
+        <td><span style="font-size:11px;font-weight:600">9–11 Tem</span></td>
+        <td><span class="badge bn">Normal</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="100" id="e_a6" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a6" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a6" onchange="sync()"><label class="chkl" for="c_a6">Tamam</label></div></td>
+      </tr>
+
+      <tr><td colspan="6" class="crow">🏖️ İzmir Baz Kamp · 12–15 Temmuz</td></tr>
+      <tr>
+        <td><div class="km">Gece Hayatı</div><div class="tp">Alsancak / Kordon</div></td>
+        <td>
+          <div class="desc">1888 Bar&amp;Lounge, 45'lik Alsancak, Endülüs Meyhane (Cuma-Cmt fasıl). Kordon başlangıç.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://ra.co/events/turkey/izmir" target="_blank">🎵 RA İzmir</a>
+            <a class="lbtn lb4" href="https://bugece.co/tr/browse/city/izmir" target="_blank">🎵 Bugece İzmir</a>
+          </div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">12–15 Tem</span></td>
+        <td><span class="badge bn">Normal</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="1200" id="e_a7" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a7" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a7" onchange="sync()"><label class="chkl" for="c_a7">Tamam</label></div></td>
+      </tr>
+      <tr>
+        <td><div class="km">Çeşme · Alaçatı · Kuşadası</div><div class="tp">3 günübirlik</div></td>
+        <td>
+          <div class="desc">13 Çeşme (ESHOT ~150₺) · 14 Alaçatı (dolmuş ~160₺) · 15 Kuşadası/Efes (~650₺). Efes sabah 08:00 aç.</div>
+          <div class="lnks">
+            <a class="lbtn lb2" href="https://www.turna.com/otobus-bileti/izmir-cesme" target="_blank">🚌 Çeşme</a>
+            <a class="lbtn lb2" href="https://www.turna.com/otobus-bileti/izmir-alacati" target="_blank">🚌 Alaçatı</a>
+            <a class="lbtn lb2" href="https://www.obilet.com/otobus-bileti/izmir-kusadasi" target="_blank">🚌 Kuşadası</a>
+          </div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">13–15 Tem</span></td>
+        <td><span class="badge bf">Günübirlik</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="960" id="e_a8" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_a8" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_a8" onchange="sync()"><label class="chkl" for="c_a8">Tamam</label></div></td>
+      </tr>
+
+      <tr><td colspan="6" class="crow">🍽️ Günlük Giderler</td></tr>
+      <tr>
+        <td><div class="km">Yemek & İçecek</div><div class="tp">13 gün · 2 kişi</div></td>
+        <td><div class="desc">500₺/kişi/gün baz. Kamp günlerinde ~300₺ (market+kamp restoran). İzmir gecelerinde ~800₺ olabilir.</div><div class="ins">Kamp restoranı kullan — ucuz ve lezzetli.</div></td>
+        <td><span style="font-size:11px;font-weight:600">3–16 Tem</span></td>
+        <td><span class="badge bk">Sabit</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="13000" id="e_d1" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_d1" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell">—</td>
+      </tr>
+      <tr>
+        <td><div class="km">Buffer Bütçe</div><div class="tp">Beklenmedik giderler</div></td>
+        <td><div class="desc">Kamp ekipmanı, market, güneş kremi, dolmuş/taksi, küçük giderler.</div></td>
+        <td><span style="font-size:11px;font-weight:600">Tüm Rota</span></td>
+        <td><span class="badge bk">Buffer</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" value="2000" id="e_d2" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_d2" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- OPSİYONEL -->
+  <div class="sec-hdr" style="margin-top:32px"><h2>Opsiyonlar & Festivaller</h2><p>İşaretleyince bütçeye eklenir · 🟣 Festival · 🔵 Aktivite</p></div>
+  <table class="tbl">
+    <thead><tr>
+      <th style="width:160px">Aktivite</th>
+      <th>Detay</th>
+      <th style="width:78px">Tarih</th>
+      <th style="width:78px">Tür</th>
+      <th style="width:148px">Tahmini / Ödendi</th>
+      <th style="width:54px">Ekle</th>
+    </tr></thead>
+    <tbody>
+      <tr class="festival">
+        <td><div class="km">Calibre Fest Bodrum</div><div class="tp">Tiësto headliner</div></td>
+        <td>
+          <div class="desc">Bodrum Deve Güreşi Arenası. Tiësto + diğer isimler. Büyük prodüksiyon, açık hava. Tatilden ~25 gün sonra.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://biletino.com/en/e-147x/calibre-fest-bodrum/" target="_blank">🎫 Biletino</a>
+            <a class="lbtn lb4" href="https://iticket.com.tr/events/music/calibre-fest-bodrum-konseri-10-agustos-mugla-bilet" target="_blank">🎫 iTicket</a>
+          </div>
+          <div class="ins">Bodrum'da 1 gece kalarak yapılabilir. Erken bilet daha ucuz.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">10 Ağu</span></td>
+        <td><span class="badge bv">🎵 Festival</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="3500" id="e_f1" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_f1" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_f1" onchange="sync()"><label class="chkl" for="c_f1">Seçildi</label></div></td>
+      </tr>
+      <tr class="festival">
+        <td><div class="km">Echoes From Agartha</div><div class="tp">Techno · Kapadokya</div></td>
+        <td>
+          <div class="desc">Kapadokya peri bacaları arasında techno festival. 26–31 Temmuz. Tatil uzatılırsa yapılabilir.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://www.festivalabroad.com/festivals/echoes-from-agartha" target="_blank">🎵 Detay</a>
+            <a class="lbtn lb4" href="https://ra.co/events/tk/all/techno" target="_blank">🎵 RA Bilet</a>
+          </div>
+          <div class="ins">Kapadokya backdrop eşsiz. İzmir'den direkt otobüs var.</div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">26–31 Tem</span></td>
+        <td><span class="badge bv">🎵 Festival</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="4000" id="e_f2" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_f2" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_f2" onchange="sync()"><label class="chkl" for="c_f2">Seçildi</label></div></td>
+      </tr>
+      <tr class="festival">
+        <td><div class="km">Afterlife İstanbul</div><div class="tp">Melodic Techno · 12 Eylül</div></td>
+        <td>
+          <div class="desc">Afterlife — dünya genelinde en prestijli techno markalardan biri. Tatil dönüşü Eylül opsiyonu.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://ra.co/events/tk/all/techno" target="_blank">🎵 RA Techno TR</a>
+            <a class="lbtn lb4" href="https://www.festivalabroad.com/techno-festivals-in-turkey" target="_blank">🎵 Festival Abroad</a>
+          </div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">12 Eyl</span></td>
+        <td><span class="badge bv">🎵 Festival</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="2000" id="e_f3" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_f3" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_f3" onchange="sync()"><label class="chkl" for="c_f3">Seçildi</label></div></td>
+      </tr>
+      <tr class="festival">
+        <td><div class="km">İzmir Elektronik Gece</div><div class="tp">Club / DJ · 12–15 Tem</div></td>
+        <td>
+          <div class="desc">Bornova kulüpleri + Alsancak DJ barları. RA ve Bugece.co'dan haftalık programı takip et.</div>
+          <div class="lnks">
+            <a class="lbtn lb4" href="https://ra.co/events/turkey/izmir" target="_blank">🎵 RA İzmir</a>
+            <a class="lbtn lb4" href="https://bugece.co/tr/browse/city/izmir" target="_blank">🎵 Bugece</a>
+          </div>
+        </td>
+        <td><span style="font-size:11px;font-weight:600">12–15 Tem</span></td>
+        <td><span class="badge bv">🎵 Kulüp</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="800" id="e_f4" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_f4" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_f4" onchange="sync()"><label class="chkl" for="c_f4">Seçildi</label></div></td>
+      </tr>
+      <tr class="optional">
+        <td><div class="km">Kelebekler Vadisi</div><div class="tp">Fethiye'den tekne</div></td>
+        <td><div class="desc">Sadece tekneyle ulaşılır. Şelale + kelebek habitatı. ~600–800₺/kişi. Fethiye tekne turuna ek.</div><div class="lnks"><a class="lbtn lb4" href="https://tatildeturla.com/turkiye/fethiye/fethiye-tekne-turlari/" target="_blank">⛵ Tatilde Turla</a></div></td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge bf">🔵 Opsiyon</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="1400" id="e_o1" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_o1" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_o1" onchange="sync()"><label class="chkl" for="c_o1">Seçildi</label></div></td>
+      </tr>
+      <tr class="optional">
+        <td><div class="km">Kaş Tüplü Dalış</div><div class="tp">1–2 dalış · Dalış merkezi</div></td>
+        <td><div class="desc">Kaş Türkiye'nin en iyi dalış noktası. Ekipman dahil ~1.500–2.500₺/kişi.</div><div class="lnks"><a class="lbtn lb4" href="https://www.kasturlari.com/" target="_blank">🤿 Kaş Dalış</a></div></td>
+        <td><span style="font-size:11px;font-weight:600">9–11 Tem</span></td>
+        <td><span class="badge bf">🔵 Opsiyon</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="4000" id="e_o2" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_o2" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_o2" onchange="sync()"><label class="chkl" for="c_o2">Seçildi</label></div></td>
+      </tr>
+      <tr class="optional">
+        <td><div class="km">Saklıkent Kanyonu</div><div class="tp">Fethiye çıkışı · Yarım gün</div></td>
+        <td><div class="desc">Fethiye'den 45 dk. Buzlu kanyon yürüyüşü. ~400₺/kişi giriş + ulaşım. Yarım günde tamam.</div></td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge bf">🔵 Opsiyon</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="1000" id="e_o3" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_o3" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_o3" onchange="sync()"><label class="chkl" for="c_o3">Seçildi</label></div></td>
+      </tr>
+      <tr class="optional">
+        <td><div class="km">Kayaköy Hayalet Köy</div><div class="tp">Fethiye'den 8 km</div></td>
+        <td><div class="desc">1924 mübadelesinden kalma terk edilmiş Rum köyü. Tarihi atmosfer inanılmaz. Minör giriş ücreti.</div></td>
+        <td><span style="font-size:11px;font-weight:600">6–8 Tem</span></td>
+        <td><span class="badge bf">🔵 Opsiyon</span></td>
+        <td><div class="price-group">
+          <div class="price-row"><span class="plbl e">Tahmini</span><div class="finp ei"><span>₺</span><input type="number" placeholder="100" id="e_o4" oninput="calc()"></div></div>
+          <div class="price-row"><span class="plbl p">Ödendi</span><div class="finp pi"><span>₺</span><input type="number" placeholder="—" id="p_o4" oninput="calc()"></div></div>
+        </div></td>
+        <td class="chkcell"><div class="chkw"><input type="checkbox" id="c_o4" onchange="sync()"><label class="chkl" for="c_o4">Seçildi</label></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════ GOOGLE CALENDAR SÜTUN TAKVİMİ ══════ -->
+  <div class="sec-hdr" style="margin-top:36px" id="cal-section">
+    <h2>Tatil Takvimi</h2>
+    <p>Aktif tüm yolculuk, konaklama ve etkinliklerin gün bazlı dağılımı (Checklist ile otomatik güncellenir)</p>
+  </div>
+  
+  <div class="cal-container">
+    <div class="cal-week-title">1. HAFTA (3 - 9 Temmuz 2026)</div>
+    <div class="cal-grid-wrapper">
+      <div class="cal-grid" id="cal-week-1"></div>
+    </div>
+
+    <div class="cal-week-title">2. HAFTA (10 - 16 Temmuz 2026)</div>
+    <div class="cal-grid-wrapper">
+      <div class="cal-grid" id="cal-week-2"></div>
+    </div>
+
+    <!-- Tatil Sezonu Dışındaki Planlar -->
+    <div class="cal-extra-box" id="cal-extra-box" style="display: none;">
+      <div class="cal-week-title" style="margin-top: 0; border-color: var(--sage)">Tatil Sonrası Sezon Planları</div>
+      <div class="cal-extra-grid" id="cal-extra-grid"></div>
+    </div>
+  </div>
+
+  <!-- EKONOMİ -->
+  <div class="sec-hdr" style="margin-top:32px"><h2>Ekonomi Taktikleri</h2><p>Araştırmaya dayalı tasarruf potansiyeli</p></div>
+  <div class="eco-grid">
+    <div class="eco-card"><div class="eco-t">🚗 BlaBlaCar Erken Takip</div><div class="eco-d">Haziran ortasından ilanları takibe al. Ankara ve Fethiye için gece seferi tercih et — hem ucuz hem gün kaybı yok.</div><div class="eco-s">Tasarruf ~2.000–3.000₺</div></div>
+    <div class="eco-card"><div class="eco-t">🏕️ Kamp Market Stratejisi</div><div class="eco-d">Camp günlerinde köy marketinden sabah alışverişi yap. Sadece akşam kamp restoranını kullan. Kişi başı ~200₺/gün tasarruf.</div><div class="eco-s">Tasarruf ~2.400₺</div></div>
+    <div class="eco-card"><div class="eco-t">⛵ Tekne Limanda Pazarlık</div><div class="eco-d">Fethiye ve Kaş'ta tekne sahipleriyle limanın kenarında direkt iletişim kur. Online fiyatın %15–25 altında olur.</div><div class="eco-s">Tasarruf ~500–1.500₺</div></div>
+    <div class="eco-card"><div class="eco-t">🪂 Paraşüt Erken Rezervasyon</div><div class="eco-d">Şimdi yapılan rezervasyon: sabah erken slot + erken fiyat. Geç rezervasyonda hem slot yok hem fiyat yüksek.</div><div class="eco-s">Tasarruf ~1.000–2.000₺</div></div>
+    <div class="eco-card"><div class="eco-t">🚌 İzmir ESHOT Günübirlik</div><div class="eco-d">Çeşme ve Alaçatı için belediye otobüsü ESHOT direkt ve çok ucuz. 2 kişi gidiş-dönüş ~100₺ vs tur şirketi ~500₺.</div><div class="eco-s">Tasarruf ~800₺</div></div>
+    <div class="eco-card"><div class="eco-t">🌊 Kekova Üçağız Çıkışı</div><div class="eco-d">Kaş'tan değil dolmuşla Üçağız'a git (~100₺) ve orada tekne bul. Daha ucuz, deniz mesafesi de kısa.</div><div class="eco-s">Tasarruf ~500–1.000₺</div></div>
+    <div class="eco-card"><div class="eco-t">🍺 Ankara Gece Stratejisi</div><div class="eco-d">Kızılay barda başla — Tunalı'ya kıyasla çok ucuz. Kulüp yerine canlı müzik barları tercih et. Önceden eve ye.</div><div class="eco-s">Tasarruf ~500₺/gece</div></div>
+    <div class="eco-card"><div class="eco-t">🎵 Festival Erken Bilet</div><div class="eco-d">Calibre Fest gibi büyük etkinlikler için erken dönem fiyatı çok daha düşük. Şimdi bakman mantıklı.</div><div class="eco-s">Tasarruf ~500–1.500₺</div></div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast">✓ Kaydedildi</div>
+
+<!-- POPUP DATA & JS -->
+<script>
+const POPUP_DATA = {
+  ankara: {
+    img: 'https://images.unsplash.com/photo-1607554972535-df452da6952a?auto=format&fit=crop&w=600&q=80',
+    eyebrow: '3–5 Temmuz 2026 · Konaklama: Arkadaşta',
+    title: 'Ankara',
+    desc: 'Türkiye\'nin başkenti. Gece hayatı açısından beklenenden çok daha canlı — Kızılay ve Tunalı Hilmi hattı boyunca barlar, meyhaneler ve kulüpler sıralanıyor. Rota başlangıç noktası olarak ideal.',
+    facts: [
+      {l:'Mesafe',v:'484 km İstanbul\'dan'},
+      {l:'Konaklama',v:'Arkadaşta · 3 gece'},
+      {l:'Ulaşım',v:'BlaBlaCar ~900₺'},
+    ],
+    tips: ['Jolly Joker\'da o hafta konser varsa bilet al — önceden doluyor.','Kızılay başlangıç noktası olarak çok ucuz. Tunalı\'ya geçince fiyatlar artar.','Gece geç saatte taksi şart — toplu taşıma kesilir.']
+  },
+  kabak: {
+    img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80',
+    eyebrow: '6–8 Temmuz 2026 · Konaklama: Kamp',
+    title: 'Kabak Koyu',
+    desc: 'Türkiye\'nin en el değmemiş koylarından biri. 1985\'te sit alanı ilan edildi. Faralya\'dan patika veya minibüsle iniş yapılıyor. Kamp alanları koyun içinde, Akdeniz\'e sıfır. Likya Yolu\'nun başlangıç noktası burası.',
+    facts: [
+      {l:'Ulaşım',v:'Faralya\'dan 30 dk patika'},
+      {l:'Konaklama',v:'Kamp ~1.800₺/gece'},
+      {l:'Öne Çıkan',v:'Snorkel · Likya Yolu · Şelale'},
+    ],
+    tips: ['Sultan Camp veya Atlas Camping — bu hafta rezervasyon yap, Temmuz doluyor.','Şnorkel ekipmanı kamp alanında ~200₺/gün kiralık.','Aladere Şelalesi yürüyüş mesafesinde — sabah erken git, soğuk ve bomboş.']
+  },
+  oludeniz: {
+    img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80',
+    eyebrow: '6–8 Temmuz 2026 · Aktivite: Tandem Paraşüt',
+    title: 'Ölüdeniz & Babadağ',
+    desc: 'Dünyanın en iyi paragliding noktalarından biri. Babadağ\'ın 1.969 metre zirvesinden Ölüdeniz lagününe tandem atlayış. Lacivert lagün havadan görüldüğünde akıllara durgunluk veren bir manzara sunuyor.',
+    facts: [
+      {l:'Yükseklik',v:'1.969 mt'},
+      {l:'Uçuş Süresi',v:'25–30 dakika'},
+      {l:'Fiyat',v:'5.000–6.000₺/kişi'},
+    ],
+    tips: ['Bu hafta rezervasyon zorunlu — Temmuz slot\'ları doluyor.','Sabah erken saatler rüzgar koşulları için en iyi zaman.','Fotoğraf/video paketi ekstra ~500₺ — almaya değer.']
+  },
+  kas: {
+    img: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80',
+    eyebrow: '9–11 Temmuz 2026 · Konaklama: Kamp',
+    title: 'Kaş',
+    desc: 'Akdeniz\'in en karakteristik küçük kasabası. Antik Likya kalıntıları, berrak deniz, taş sokaklarda kafeler ve liman kenarı. Kekova\'ya tekne turlarının hareket noktası. Dalış tutkunlarının Türkiye\'deki en önemli destinasyonu.',
+    facts: [
+      {l:'Konaklama',v:'Kaş Kamping — denize sıfır'},
+      {l:'Öne Çıkan',v:'Kekova · Dalış · Sunset'},
+      {l:'Tekne Turu',v:'~1.500–2.500₺/kişi'},
+    ],
+    tips: ['Kaş Kamping en iyi konum — Antik Tiyatro önü, merkeze 500m.','Kekova turunu öğleden sonra al — Simena\'da gün batımı görürsün.','Kaputaş Plajı yol üzeri — Fethiye\'den gelirken driver\'dan iste.']
+  },
+  izmir: {
+    img: 'https://images.unsplash.com/photo-1562602833-0f4ab2fc46e3?auto=format&fit=crop&w=600&q=80',
+    eyebrow: '12–15 Temmuz 2026 · Baz Kamp · Konaklama: Arkadaşta',
+    title: 'İzmir',
+    desc: 'Türkiye\'nin en özgür ve kozmopolit şehri. Alsancak ve Kordon hattında canlı gece hayatı. Çeşme, Alaçatı ve Kuşadası için mükemmel üs — hepsi 1,5 saat mesafede. Temmuzda elektronik müzik sahnesi aktif.',
+    facts: [
+      {l:'Gece Hayatı',v:'Alsancak / Kordon / Bornova'},
+      {l:'Günübirlik',v:'Çeşme · Alaçatı · Efes'},
+      {l:'Elektronik',v:'RA İzmir + Bugece'},
+    ],
+    tips: ['1888 Bar&Lounge ve 45\'lik Alsancak canlı müzik için en iyi adres.','RA.co/events/turkey/izmir üzerinden haftalık techno program takibi yap.','Çeşme için ESHOT otobüsü — çok ucuz, direkt.']
+  }
+};
+
+function openPopup(key) {
+  const d = POPUP_DATA[key];
+  if(!d) return;
+  document.getElementById('popup-img').src = d.img;
+  document.getElementById('popup-img').onerror = function(){ this.src='https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80'; };
+  document.getElementById('popup-eyebrow').textContent = d.eyebrow;
+  document.getElementById('popup-title').textContent = d.title;
+  document.getElementById('popup-desc').textContent = d.desc;
+  const facts = document.getElementById('popup-facts');
+  facts.innerHTML = d.facts.map(f=>`<div class="popup-fact"><div class="popup-fact-l">${f.l}</div><div class="popup-fact-v">${f.v}</div></div>`).join('');
+  const tips = document.getElementById('popup-tips-list');
+  tips.innerHTML = d.tips.map(t=>`<div class="popup-tip">${t}</div>`).join('');
+  document.getElementById('popup-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePopup(e) {
+  if(e.target === document.getElementById('popup-overlay')) closePopupBtn();
+}
+function closePopupBtn() {
+  document.getElementById('popup-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closePopupBtn(); });
+
+// ─── TAKVİM ŞABLONU VE DETAYLARI ───
+const CALENDAR_DAYS = [
+  { dayNum: 3, label: '3 Tem', name: 'Cuma', week: 1 },
+  { dayNum: 4, label: '4 Tem', name: 'Cmt', week: 1 },
+  { dayNum: 5, label: '5 Tem', name: 'Paz', week: 1 },
+  { dayNum: 6, label: '6 Tem', name: 'Pzt', week: 1 },
+  { dayNum: 7, label: '7 Tem', name: 'Sal', week: 1 },
+  { dayNum: 8, label: '8 Tem', name: 'Çar', week: 1 },
+  { dayNum: 9, label: '9 Tem', name: 'Per', week: 1 },
+  { dayNum: 10, label: '10 Tem', name: 'Cum', week: 2 },
+  { dayNum: 11, label: '11 Tem', name: 'Cmt', week: 2 },
+  { dayNum: 12, label: '12 Tem', name: 'Paz', week: 2 },
+  { dayNum: 13, label: '13 Tem', name: 'Pzt', week: 2 },
+  { dayNum: 14, label: '14 Tem', name: 'Sal', week: 2 },
+  { dayNum: 15, label: '15 Tem', name: 'Çar', week: 2 },
+  { dayNum: 16, label: '16 Tem', name: 'Per', week: 2 },
+];
+
+const EVENT_TEMPLATES = [
+  // ULAŞIMLAR (transport)
+  { id: 'c_u1', title: '🚗 İst → Ank Yolculuk', dates: [3], type: 'transport', isOptional: false },
+  { id: 'c_u2', title: '🚗 Ank → Fethiye Gece', dates: [6], type: 'transport', isOptional: false },
+  { id: 'c_u3', title: '🚌 Fethiye → Kaş', dates: [9], type: 'transport', isOptional: false },
+  { id: 'c_u4', title: '🚗 Kaş → İzmir Yolculuk', dates: [12], type: 'transport', isOptional: false },
+  { id: 'c_u5', title: '✈️ İzmir → İst Dönüş', dates: [16], type: 'transport', isOptional: false },
+
+  // KONAKLAMALAR (hotel)
+  { id: 'c_k1', title: '🏡 Ankara Arkadaş Evi', dates: [3, 4, 5], type: 'hotel', isOptional: false },
+  { id: 'c_k2', title: '⛺ Kabak Sultan/Atlas', dates: [6, 7, 8], type: 'hotel', isOptional: false },
+  { id: 'c_k3', title: '⛺ Kaş Kamping', dates: [9, 10, 11], type: 'hotel', isOptional: false },
+  { id: 'c_k4', title: '🏡 İzmir Arkadaş Evi', dates: [12, 13, 14, 15], type: 'hotel', isOptional: false },
+
+  // AKTİVİTELER (activity)
+  { id: 'c_a1', title: '🎵 Tunalı Gece Hayatı', dates: [3, 4, 5], type: 'activity', isOptional: false },
+  { id: 'c_a2', title: '🪂 Babadağ Yamaç Paraşütü', dates: [6, 7, 8], type: 'activity', isOptional: false },
+  { id: 'c_a3', title: '⛵ 12 Adalar Tekne', dates: [6, 7, 8], type: 'activity', isOptional: false },
+  { id: 'c_a4', title: '🥾 Likya Yolu & Şnorkel', dates: [6, 7, 8], type: 'activity', isOptional: false },
+  { id: 'c_a5', title: '⛵ Kekova Batık Şehir', dates: [9, 10, 11], type: 'activity', isOptional: false },
+  { id: 'c_a6', title: '🏖️ Kaputaş & Liman Sunset', dates: [9, 10, 11], type: 'activity', isOptional: false },
+  { id: 'c_a7', title: '🎵 Alsancak Gece Hayatı', dates: [12, 13, 14, 15], type: 'activity', isOptional: false },
+  { id: 'c_a8', title: '🌊 Çeşme Günübirlik', dates: [13], type: 'activity', isOptional: false },
+  { id: 'c_a8', title: '🏘️ Alaçatı Günübirlik', dates: [14], type: 'activity', isOptional: false },
+  { id: 'c_a8', title: '🏛️ Efes Antik Kenti', dates: [15], type: 'activity', isOptional: false },
+
+  // OPSİYONLAR VE FESTİVALLER (İşaretlendiğinde Dinamik Olarak Gelirler)
+  { id: 'c_f4', title: '⚡ Bornova Elektronik Gece', dates: [12, 13, 14, 15], type: 'festival', isOptional: true },
+  { id: 'c_o1', title: '🦋 Kelebekler Vadisi', dates: [6, 7, 8], type: 'optional', isOptional: true },
+  { id: 'c_o2', title: '🤿 Kaş Tüplü Dalış', dates: [9, 10, 11], type: 'optional', isOptional: true },
+  { id: 'c_o3', title: '🏔️ Saklıkent Kanyonu', dates: [6, 7, 8], type: 'optional', isOptional: true },
+  { id: 'c_o4', title: '🏚️ Kayaköy Hayalet Köy', dates: [6, 7, 8], type: 'optional', isOptional: true },
+
+  // SEZON DIŞI PLANLAR (Tatil tarihleri dışında gösterilecekler)
+  { id: 'c_f1', title: '🎵 Calibre Fest Bodrum (Tiësto)', dateText: '10 Ağustos', type: 'festival', isOptional: true, isOut: true },
+  { id: 'c_f2', title: '🎵 Echoes From Agartha Kapadokya', dateText: '26–31 Temmuz', type: 'festival', isOptional: true, isOut: true },
+  { id: 'c_f3', title: '🎵 Afterlife İstanbul (Melodic)', dateText: '12 Eylül', type: 'festival', isOptional: true, isOut: true }
+];
+
+function updateCalendar() {
+  const week1El = document.getElementById('cal-week-1');
+  const week2El = document.getElementById('cal-week-2');
+  const extraBoxEl = document.getElementById('cal-extra-box');
+  const extraGridEl = document.getElementById('cal-extra-grid');
+
+  if (!week1El || !week2El) return;
+
+  // Günlük olay havuzunu hazırla
+  const dayEvents = {};
+  CALENDAR_DAYS.forEach(d => {
+    dayEvents[d.dayNum] = [];
+  });
+
+  const outEvents = [];
+
+  // Checklist durumlarını tarayarak takvimi oluştur
+  EVENT_TEMPLATES.forEach(tpl => {
+    const cb = document.getElementById(tpl.id);
+    const isChecked = cb ? cb.checked : false;
+
+    // Opsiyonel seçilmeyenleri takvime ekleme
+    if (tpl.isOptional && !isChecked) return;
+
+    // Sezon dışı etkinlikleri listele
+    if (tpl.isOut) {
+      outEvents.push({ title: tpl.title, dateText: tpl.dateText, type: tpl.type });
+      return;
+    }
+
+    // Günlere ata
+    tpl.dates.forEach(dNum => {
+      if (dayEvents[dNum] !== undefined) {
+        dayEvents[dNum].push({
+          title: tpl.title,
+          type: tpl.type,
+          completed: isChecked
+        });
+      }
+    });
+  });
+
+  // Takvim sütunlarını HTML olarak render et
+  const renderWeek = (weekNum, element) => {
+    element.innerHTML = '';
+    const days = CALENDAR_DAYS.filter(d => d.week === weekNum);
+
+    days.forEach(d => {
+      const events = dayEvents[d.dayNum] || [];
+      
+      // Sıralama: Ulaşım -> Konaklama -> Aktivite -> Opsiyonel -> Festival
+      const typeOrder = { transport: 1, hotel: 2, activity: 3, optional: 4, festival: 5 };
+      events.sort((a,b) => (typeOrder[a.type] || 9) - (typeOrder[b.type] || 9));
+
+      const eventsHTML = events.map(e => {
+        const checkIcon = e.completed ? '✓ ' : '';
+        const completedClass = e.completed ? 'completed' : '';
+        return `<div class="cal-event-pill ep-${e.type} ${completedClass}" title="${e.title}">${checkIcon}${e.title}</div>`;
+      }).join('');
+
+      const cardHTML = `
+        <div class="cal-day-card">
+          <div class="cal-day-header">
+            <span class="cal-day-lbl">${d.label}</span>
+            <span class="cal-day-name">${d.name}</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px; flex:1; overflow-y:auto;">
+            ${eventsHTML || '<div style="font-size:9.5px;color:#ccc;text-align:center;margin-top:12px;font-style:italic">Plan yok</div>'}
+          </div>
+        </div>
+      `;
+      element.insertAdjacentHTML('beforeend', cardHTML);
+    });
+  };
+
+  renderWeek(1, week1El);
+  renderWeek(2, week2El);
+
+  // Sezon Dışı Kutusu Güncellemesi
+  if (outEvents.length > 0) {
+    extraBoxEl.style.display = 'block';
+    extraGridEl.innerHTML = outEvents.map(e => `
+      <div class="cal-extra-card">
+        <span class="cal-extra-date">${e.dateText}</span>
+        <span class="cal-extra-title">${e.title}</span>
+      </div>
+    `).join('');
+  } else {
+    extraBoxEl.style.display = 'none';
+  }
+}
+
+// ─── BUDGET CALC ───
+const EST = ['e_u1','e_u2','e_u3','e_u4','e_u5','e_k1','e_k2','e_k3','e_k4','e_a1','e_a2','e_a3','e_a4','e_a5','e_a6','e_a7','e_a8','e_d1','e_d2','e_f1','e_f2','e_f3','e_f4','e_o1','e_o2','e_o3','e_o4'];
+const PAD = ['p_u1','p_u2','p_u3','p_u4','p_u5','p_k1','p_k2','p_k3','p_k4','p_a1','p_a2','p_a3','p_a4','p_a5','p_a6','p_a7','p_a8','p_d1','p_d2','p_f1','p_f2','p_f3','p_f4','p_o1','p_o2','p_o3','p_o4'];
+const CHK = ['c_u1','c_u2','c_u3','c_u4','c_u5','c_k1','c_k2','c_k3','c_k4','c_a1','c_a2','c_a3','c_a4','c_a5','c_a6','c_a7','c_a8','c_f1','c_f2','c_f3','c_f4','c_o1','c_o2','c_o3','c_o4'];
+const MAIN = ['c_u1','c_u2','c_u3','c_u4','c_u5','c_k1','c_k2','c_k3','c_k4','c_a1','c_a2','c_a3','c_a4','c_a5','c_a6','c_a7','c_a8'];
+
+function calc() {
+  let est=0, paid=0;
+  EST.forEach(id=>{const el=document.getElementById(id);if(el&&el.value)est+=parseFloat(el.value)||0});
+  PAD.forEach(id=>{const el=document.getElementById(id);if(el&&el.value)paid+=parseFloat(el.value)||0});
+  const due = Math.max(0, est-paid);
+  const fmt = v => v.toLocaleString('tr-TR')+' ₺';
+  document.getElementById('bs-est').textContent = fmt(est);
+  document.getElementById('bs-paid').textContent = fmt(paid);
+  document.getElementById('bs-due').textContent = fmt(due);
+  document.getElementById('ts-est').textContent = fmt(est);
+  document.getElementById('ts-paid').textContent = fmt(paid);
+  document.getElementById('ts-due').textContent = fmt(due);
+  saveData(true);
+}
+
+function sync() {
+  CHK.forEach(id=>{
+    const cb=document.getElementById(id);
+    if(!cb) return;
+    cb.closest('tr').classList.toggle('done', cb.checked);
+  });
+  const done = MAIN.filter(id=>{const el=document.getElementById(id);return el&&el.checked}).length;
+  const pct = Math.round((done/MAIN.length)*100);
+  document.getElementById('ts-prog').textContent = pct+'%';
+  document.getElementById('bb-pct').textContent = pct+'%';
+  document.getElementById('bb-fill').style.width = pct+'%';
+  const a1=document.getElementById('c_k2'), a2=document.getElementById('c_a2');
+  const ul = [a1,a2].filter(el=>el&&!el.checked).length;
+  document.getElementById('ts-acil').textContent = ul;
+  document.getElementById('acil-bar').style.display = ul===0 ? 'none' : 'flex';
+  
+  calc();
+  updateCalendar(); // Takvimi checklist durumlarıyla senkronize et
+}
+
+function saveData(silent=false) {
+  const d={};
+  [...EST,...PAD].forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value});
+  CHK.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.checked});
+  localStorage.setItem('tatil_v5', JSON.stringify(d));
+  if(!silent){
+    const t=document.getElementById('toast');
+    t.style.display='block';
+    setTimeout(()=>t.style.display='none',1800);
+  }
+}
+
+function loadData() {
+  const raw = localStorage.getItem('tatil_v5');
+  if(!raw){sync();calc();return;}
+  const d = JSON.parse(raw);
+  [...EST,...PAD].forEach(id=>{const el=document.getElementById(id);if(el&&d[id]!==undefined)el.value=d[id]});
+  CHK.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&d[id]!==undefined){
+      el.checked=d[id];
+      if(d[id]) el.closest('tr').classList.add('done');
+    }
+  });
+  sync();calc();
+}
+
+document.querySelectorAll('input[type=number]').forEach(i=>i.addEventListener('input',calc));
+window.addEventListener('load', loadData);
+</script>
+</body>
+</html>
